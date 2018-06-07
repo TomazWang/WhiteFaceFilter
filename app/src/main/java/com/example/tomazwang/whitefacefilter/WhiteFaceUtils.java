@@ -132,7 +132,7 @@ public final class WhiteFaceUtils {
             @NonNull Bitmap bitmap) throws FileNotFoundException {
 
         String name = String.format("blur-filter-output-%s.png", UUID.randomUUID().toString());
-        File outputDir = new File(applicationContext.getFilesDir(), KEY_WORK_DATA_OUTPUT_PATH);
+        File outputDir = new File(applicationContext.getFilesDir(), WORK_DATA_OUTPUT_PATH);
         if (!outputDir.exists()) {
             outputDir.mkdirs(); // should succeed
         }

@@ -3,9 +3,11 @@ package com.example.tomazwang.whitefacefilter.filterpage;
 import android.net.Uri;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkContinuation;
 import androidx.work.WorkManager;
 import com.example.tomazwang.whitefacefilter.Constant;
 import com.example.tomazwang.whitefacefilter.work.BrightnessWork;
+import com.example.tomazwang.whitefacefilter.work.CleanUpWork;
 
 import static com.example.tomazwang.whitefacefilter.WhiteFaceUtils.uriOrNull;
 
@@ -40,15 +42,13 @@ public class FilterPagePresenter implements FilterPageContract.Presenter {
     @Override
     public void filter(int strength) {
 
-        //mWorkManager.enqueue(OneTimeWorkRequest.from(BrightnessWork.class));
-
         OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(BrightnessWork.class)
                 .setInputData(createInputDataForUri())
                 .build();
 
-
-        mWorkManager.enqueue(request);
-
+        WorkContinuation continuation = mWorkManager.beginWith(request);
+        continuation = continuation.then(OneTimeWorkRequest.from(CleanUpWork.class));
+        continuation.enqueue();
     }
 
     private Data createInputDataForUri() {
