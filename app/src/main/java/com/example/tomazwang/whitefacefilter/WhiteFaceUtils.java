@@ -50,7 +50,7 @@ public final class WhiteFaceUtils {
 
         Paint paint = new Paint();
 
-        int brightness = (int) (((float) strength / 100f) * 180) + 50;
+        int brightness = (int) (((float) strength / 100f) * 200) + 50;
 
         PorterDuffColorFilter pdf =
                 new PorterDuffColorFilter(Color.argb(brightness, 255, 255, 255), PorterDuff.Mode.SRC_OVER);

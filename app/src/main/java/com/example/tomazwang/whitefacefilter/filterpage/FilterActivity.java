@@ -45,8 +45,8 @@ public class FilterActivity extends AppCompatActivity implements FilterPageContr
         mBtnMid = findViewById(R.id.btn_filter_mid);
         mBtnMax = findViewById(R.id.btn_filter_max);
 
-        mBtnMin.setOnClickListener( v -> mPresenter.filter(40));
-        mBtnMid.setOnClickListener( v -> mPresenter.filter(70));
+        mBtnMin.setOnClickListener( v -> mPresenter.filter(20));
+        mBtnMid.setOnClickListener( v -> mPresenter.filter(50));
         mBtnMax.setOnClickListener( v -> mPresenter.filter(100));
 
         mProgress = findViewById(R.id.progress_loading);

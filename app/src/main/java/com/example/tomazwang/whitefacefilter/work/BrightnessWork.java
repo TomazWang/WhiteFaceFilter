@@ -31,6 +31,7 @@ public class BrightnessWork extends Worker {
 
         // get input
         String resourceUri = getInputData().getString(Constant.KEY_WORK_DATA_IMAGE_URI, null);
+        int strength = getInputData().getInt(Constant.KEY_WORK_DATA_FILTER_STRENGHT, 0);
 
 
 
@@ -48,7 +49,7 @@ public class BrightnessWork extends Worker {
             return WorkerResult.FAILURE;
         }
 
-        Bitmap result = WhiteFaceUtils.whiteFilter(source, 2);
+        Bitmap result = WhiteFaceUtils.whiteFilter(source, strength);
 
         Uri outputUri;
         try {
@@ -59,7 +60,7 @@ public class BrightnessWork extends Worker {
             return WorkerResult.FAILURE;
         }
 
-        //WhiteFaceUtils.makeNotification("Jobs done!", context);
+        WhiteFaceUtils.makeNotification("Jobs done!", context);
         return WorkerResult.SUCCESS;
     }
 }

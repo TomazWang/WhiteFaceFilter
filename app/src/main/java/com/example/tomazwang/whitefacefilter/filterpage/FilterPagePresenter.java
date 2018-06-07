@@ -4,11 +4,11 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import androidx.work.Constraints;
 import androidx.work.Data;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkContinuation;
 import androidx.work.WorkManager;
 import androidx.work.WorkStatus;
 import com.example.tomazwang.whitefacefilter.Constant;
@@ -33,6 +33,8 @@ public class FilterPagePresenter implements FilterPageContract.Presenter {
     private WorkManager mWorkManager;
     private Uri mImageUri;
 
+    private boolean mIsWaitForFilter = false;
+
     @Override
     public void setView(FilterPageContract.View view) {
         this.mView = view;
@@ -53,6 +55,17 @@ public class FilterPagePresenter implements FilterPageContract.Presenter {
                         WorkStatus workStatus = workStatuses.get(0);
                         if (workStatus.getState().isFinished()) {
                             mView.dismissProgress();
+
+                            if (mIsWaitForFilter) {
+                                Data outputData = workStatus.getOutputData();
+                                String outputImageUri = outputData.getString(Constant.KEY_WORK_DATA_IMAGE_URI, null);
+
+                                if (!TextUtils.isEmpty(outputImageUri)) {
+                                    mView.showImage(uriOrNull(outputImageUri));
+                                }
+
+                                mIsWaitForFilter = false;
+                            }
                         } else {
                             mView.showProgress();
                         }
@@ -70,14 +83,8 @@ public class FilterPagePresenter implements FilterPageContract.Presenter {
     public void filter(int strength) {
 
         OneTimeWorkRequest filterWork = new OneTimeWorkRequest.Builder(BrightnessWork.class)
-                .setInputData(createInputDataForUri())
+                .setInputData(createInputDataForUri(strength))
                 .build();
-
-        WorkContinuation continuation = mWorkManager.beginUniqueWork(
-                Constant.WORKNAME_FILTER,
-                ExistingWorkPolicy.REPLACE,
-                filterWork
-        );
 
         // Create charging constraint
         Constraints constraints = new Constraints.Builder()
@@ -88,15 +95,23 @@ public class FilterPagePresenter implements FilterPageContract.Presenter {
                 .setConstraints(constraints)
                 .build();
 
-        continuation = continuation.then(cleanUpWork);
-        continuation.enqueue();
+        mWorkManager.beginUniqueWork(
+                Constant.WORKNAME_FILTER,
+                ExistingWorkPolicy.REPLACE,
+                cleanUpWork)
+                .then(filterWork)
+                .enqueue();
+
+        mIsWaitForFilter = true;
     }
 
-    private Data createInputDataForUri() {
+    private Data createInputDataForUri(int strength) {
         Data.Builder builder = new Data.Builder();
         if (mImageUri != null) {
             builder.putString(Constant.KEY_WORK_DATA_IMAGE_URI, mImageUri.toString());
         }
+
+        builder.putInt(Constant.KEY_WORK_DATA_FILTER_STRENGHT, strength);
         return builder.build();
     }
 }

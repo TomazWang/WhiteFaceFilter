@@ -10,6 +10,7 @@ package com.example.tomazwang.whitefacefilter;
 public interface Constant {
 
     String KEY_WORK_DATA_IMAGE_URI = "WORK_DATA_IMAGE_URI";
+    String KEY_WORK_DATA_FILTER_STRENGHT = "KEY_WORK_DATA_FILTER_STRENGHT";
     String WORK_DATA_OUTPUT_PATH = "whiteface_filter_outputs";
     String WORKNAME_FILTER = "WORKNAME_FILTER";
 
