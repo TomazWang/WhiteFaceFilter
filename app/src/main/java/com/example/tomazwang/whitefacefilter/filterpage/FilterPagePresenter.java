@@ -2,6 +2,7 @@ package com.example.tomazwang.whitefacefilter.filterpage;
 
 import android.net.Uri;
 import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkContinuation;
 import androidx.work.WorkManager;
@@ -46,7 +47,12 @@ public class FilterPagePresenter implements FilterPageContract.Presenter {
                 .setInputData(createInputDataForUri())
                 .build();
 
-        WorkContinuation continuation = mWorkManager.beginWith(request);
+        WorkContinuation continuation = mWorkManager.beginUniqueWork(
+                Constant.WORKNAME_FILTER,
+                ExistingWorkPolicy.REPLACE,
+                request
+        );
+        
         continuation = continuation.then(OneTimeWorkRequest.from(CleanUpWork.class));
         continuation.enqueue();
     }

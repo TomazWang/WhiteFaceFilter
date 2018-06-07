@@ -17,6 +17,7 @@ public interface Constant {
     String NOTIFICATION_CHANNEL_DESCRIPTION = "show some notification when things happend";
     String NOTIFICATION_CHANNEL_ID = "NOTIFICATION_CHANNEL_ID";
     String NOTIFICATION_TITLE = "White Face Filter";
+
     int NOTIFICATION_ID = 9487;
 
 }
