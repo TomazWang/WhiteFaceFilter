@@ -1,5 +1,6 @@
 package com.example.tomazwang.whitefacefilter.filterpage;
 
+import android.arch.lifecycle.LifecycleOwner;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
@@ -32,5 +33,6 @@ public interface FilterPageContract {
 
         void filter(int strength);
 
+        void setLifecycleOwner(LifecycleOwner lifecycleOwner);
     }
 }

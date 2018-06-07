@@ -37,6 +37,7 @@ public class FilterActivity extends AppCompatActivity implements FilterPageContr
 
         mPresenter = new FilterPagePresenter();
         mPresenter.setView(this);
+        mPresenter.setLifecycleOwner(this);
 
         mImgPhoto = findViewById(R.id.img_photo);
 
