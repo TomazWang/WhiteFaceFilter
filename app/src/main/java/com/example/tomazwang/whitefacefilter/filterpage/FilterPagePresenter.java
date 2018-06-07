@@ -1,9 +1,9 @@
 package com.example.tomazwang.whitefacefilter.filterpage;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
-import com.example.tomazwang.whitefacefilter.WhiteFaceUtils;
-import com.example.tomazwang.whitefacefilter.app.App;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import com.example.tomazwang.whitefacefilter.work.BrightnessWork;
 
 import static com.example.tomazwang.whitefacefilter.WhiteFaceUtils.uriOrNull;
 
@@ -17,11 +17,13 @@ import static com.example.tomazwang.whitefacefilter.WhiteFaceUtils.uriOrNull;
 public class FilterPagePresenter implements FilterPageContract.Presenter {
 
     private FilterPageContract.View mView;
+    private WorkManager mWorkManager;
     private Uri mImageUri;
 
     @Override
     public void setView(FilterPageContract.View view) {
         this.mView = view;
+        this.mWorkManager = WorkManager.getInstance();
     }
 
 
@@ -32,12 +34,7 @@ public class FilterPagePresenter implements FilterPageContract.Presenter {
 
     @Override
     public void filter(int strength) {
-        Bitmap sourceImage = getImageBitmap();
-        Bitmap result = WhiteFaceUtils.whiteFilter(sourceImage, strength);
-        mView.showImage(result);
+        mWorkManager.enqueue(OneTimeWorkRequest.from(BrightnessWork.class));
     }
 
-    private Bitmap getImageBitmap() {
-        return WhiteFaceUtils.getImageFromResource(App.get());
-    }
 }
