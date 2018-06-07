@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import androidx.work.Worker;
 import com.example.tomazwang.whitefacefilter.Constant;
+import com.example.tomazwang.whitefacefilter.WhiteFaceUtils;
 import java.io.File;
 
 /**
@@ -39,6 +40,7 @@ public class CleanUpWork extends Worker {
                 }
             }
 
+            WhiteFaceUtils.makeNotification("All clean up!", context);
             return WorkerResult.SUCCESS;
         } catch (Exception exception) {
             Log.e(TAG, "Error cleaning up", exception);

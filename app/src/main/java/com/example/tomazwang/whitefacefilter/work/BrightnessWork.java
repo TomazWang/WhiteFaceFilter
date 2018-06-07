@@ -59,7 +59,7 @@ public class BrightnessWork extends Worker {
             return WorkerResult.FAILURE;
         }
 
-        WhiteFaceUtils.makeNotification("Jobs done!", context);
+        //WhiteFaceUtils.makeNotification("Jobs done!", context);
         return WorkerResult.SUCCESS;
     }
 }

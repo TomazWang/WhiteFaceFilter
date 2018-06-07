@@ -1,6 +1,7 @@
 package com.example.tomazwang.whitefacefilter.filterpage;
 
 import android.net.Uri;
+import androidx.work.Constraints;
 import androidx.work.Data;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
@@ -43,17 +44,27 @@ public class FilterPagePresenter implements FilterPageContract.Presenter {
     @Override
     public void filter(int strength) {
 
-        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(BrightnessWork.class)
+        OneTimeWorkRequest filterWork = new OneTimeWorkRequest.Builder(BrightnessWork.class)
                 .setInputData(createInputDataForUri())
                 .build();
 
         WorkContinuation continuation = mWorkManager.beginUniqueWork(
                 Constant.WORKNAME_FILTER,
                 ExistingWorkPolicy.REPLACE,
-                request
+                filterWork
         );
-        
-        continuation = continuation.then(OneTimeWorkRequest.from(CleanUpWork.class));
+
+
+        // Create charging constraint
+        Constraints constraints = new Constraints.Builder()
+                .setRequiresCharging(true)
+                .build();
+
+        OneTimeWorkRequest cleanUpWork = new OneTimeWorkRequest.Builder(CleanUpWork.class)
+                .setConstraints(constraints)
+                .build();
+
+        continuation = continuation.then(cleanUpWork);
         continuation.enqueue();
     }
 
