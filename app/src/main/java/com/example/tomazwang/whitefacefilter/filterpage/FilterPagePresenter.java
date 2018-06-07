@@ -1,8 +1,10 @@
 package com.example.tomazwang.whitefacefilter.filterpage;
 
 import android.net.Uri;
+import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
+import com.example.tomazwang.whitefacefilter.Constant;
 import com.example.tomazwang.whitefacefilter.work.BrightnessWork;
 
 import static com.example.tomazwang.whitefacefilter.WhiteFaceUtils.uriOrNull;
@@ -15,6 +17,8 @@ import static com.example.tomazwang.whitefacefilter.WhiteFaceUtils.uriOrNull;
  **/
 
 public class FilterPagePresenter implements FilterPageContract.Presenter {
+
+    private static final String TAG = FilterPagePresenter.class.getSimpleName();
 
     private FilterPageContract.View mView;
     private WorkManager mWorkManager;
@@ -30,11 +34,30 @@ public class FilterPagePresenter implements FilterPageContract.Presenter {
     @Override
     public void setSourceImagePath(String imagePath) {
         mImageUri = uriOrNull(imagePath);
+        mView.showImage(mImageUri);
     }
 
     @Override
     public void filter(int strength) {
-        mWorkManager.enqueue(OneTimeWorkRequest.from(BrightnessWork.class));
+
+        //mWorkManager.enqueue(OneTimeWorkRequest.from(BrightnessWork.class));
+
+        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(BrightnessWork.class)
+                .setInputData(createInputDataForUri())
+                .build();
+
+
+        mWorkManager.enqueue(request);
+
     }
+
+    private Data createInputDataForUri() {
+        Data.Builder builder = new Data.Builder();
+        if (mImageUri != null) {
+            builder.putString(Constant.KEY_WORK_DATA_IMAGE_URI, mImageUri.toString());
+        }
+        return builder.build();
+    }
+
 
 }

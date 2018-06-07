@@ -12,10 +12,18 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.UUID;
+
+import static com.example.tomazwang.whitefacefilter.Constant.*;
 
 /**
  * Created by TomazWang on 2018/06/06.
@@ -27,12 +35,6 @@ import android.util.Log;
 public final class WhiteFaceUtils {
 
     private static final String TAG = WhiteFaceUtils.class.getSimpleName();
-
-    private static final String NOTIFICATION_CHANNEL_NAME = "WhiteFace notification" ;
-    private static final String NOTIFICATION_CHANNEL_DESCRIPTION = "show some notification when things happend";
-    private static final String NOTIFICATION_CHANNEL_ID = "NOTIFICATION_CHANNEL_ID";
-    private static final String NOTIFICATION_TITLE = "White Face Filter";
-    private static final int NOTIFICATION_ID = 9487;
 
     /**
      * Crank up the brightness of the input Bitmap
@@ -116,5 +118,37 @@ public final class WhiteFaceUtils {
 
         // Show the notification
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
+    }
+
+    /**
+     * Writes bitmap to a temporary file and returns the Uri for the file
+     * @param applicationContext Application context
+     * @param bitmap Bitmap to write to temp file
+     * @return Uri for temp file with bitmap
+     * @throws FileNotFoundException Throws if bitmap file cannot be found
+     */
+    public static Uri writeBitmapToFile(
+            @NonNull Context applicationContext,
+            @NonNull Bitmap bitmap) throws FileNotFoundException {
+
+        String name = String.format("blur-filter-output-%s.png", UUID.randomUUID().toString());
+        File outputDir = new File(applicationContext.getFilesDir(), KEY_WORK_DATA_OUTPUT_PATH);
+        if (!outputDir.exists()) {
+            outputDir.mkdirs(); // should succeed
+        }
+        File outputFile = new File(outputDir, name);
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(outputFile);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 0 /* ignored for PNG */, out);
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException ignore) {
+                }
+            }
+        }
+        return Uri.fromFile(outputFile);
     }
 }

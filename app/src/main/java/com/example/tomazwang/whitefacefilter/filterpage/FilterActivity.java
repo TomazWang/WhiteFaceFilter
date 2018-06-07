@@ -50,15 +50,10 @@ public class FilterActivity extends AppCompatActivity implements FilterPageContr
 
         mProgress = findViewById(R.id.progress_loading);
 
-        //Intent intent = getIntent();
-        //String imageUriExtra = intent.getStringExtra(INTENT_KEY_IMAGE_URI);
-        //
-        //
-        //if(imageUri != null){
-        //    Glide.with(this).load(imageUri).into(mImgPhoto);
-        //}
+        Intent intent = getIntent();
+        String imageUriExtra = intent.getStringExtra(INTENT_KEY_IMAGE_URI);
+        mPresenter.setSourceImagePath(imageUriExtra);
 
-        Glide.with(this).load(R.drawable.some_guy).into(mImgPhoto);
     }
 
 
